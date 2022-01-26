@@ -1,3 +1,10 @@
+# 목표
+특정 Frame의 Anchor, Pose 등 데이터를 저장하고, 주어지는 두 좌표의 길이를 구할 수 있도록 함
+
+# 원본
+https://github.com/CariusLars/ar_flutter_plugin
+
+
 # ar_flutter_plugin
 [![pub package](https://img.shields.io/pub/v/ar_flutter_plugin.svg)](https://pub.dev/packages/ar_flutter_plugin)
 
