@@ -24,8 +24,7 @@ class ARSessionManager {
   /// Receives hit results from user taps with tracked planes or feature points
   late ARHitResultHandler onPlaneOrPointTap;
 
-  ARSessionManager(int id, this.buildContext, this.planeDetectionConfig,
-      {this.debug = false}) {
+  ARSessionManager(int id, this.buildContext, this.planeDetectionConfig, {this.debug = false}) {
     _channel = MethodChannel('arsession_$id');
     _channel.setMethodCallHandler(_platformCallHandler);
     if (debug) {
@@ -48,10 +47,7 @@ class ARSessionManager {
         case 'onPlaneOrPointTap':
           if (onPlaneOrPointTap != null) {
             final rawHitTestResults = call.arguments as List<dynamic>;
-            final serializedHitTestResults = rawHitTestResults
-                .map(
-                    (hitTestResult) => Map<String, dynamic>.from(hitTestResult))
-                .toList();
+            final serializedHitTestResults = rawHitTestResults.map((hitTestResult) => Map<String, dynamic>.from(hitTestResult)).toList();
             final hitTestResults = serializedHitTestResults.map((e) {
               return ARHitTestResult.fromJson(e);
             }).toList();
@@ -100,12 +96,8 @@ class ARSessionManager {
 
   /// Displays the [errorMessage] in a snackbar of the parent widget
   onError(String errorMessage) {
-    ScaffoldMessenger.of(buildContext).showSnackBar(SnackBar(
-        content: Text(errorMessage),
-        action: SnackBarAction(
-            label: 'HIDE',
-            onPressed:
-                ScaffoldMessenger.of(buildContext).hideCurrentSnackBar)));
+    ScaffoldMessenger.of(buildContext)
+        .showSnackBar(SnackBar(content: Text(errorMessage), action: SnackBarAction(label: 'HIDE', onPressed: ScaffoldMessenger.of(buildContext).hideCurrentSnackBar)));
   }
 
   /// Dispose the AR view on the platforms to pause the scenes and disconnect the platform handlers.
@@ -122,5 +114,10 @@ class ARSessionManager {
   Future<ImageProvider> snapshot() async {
     final result = await _channel.invokeMethod<Uint8List>('snapshot');
     return MemoryImage(result!);
+  }
+
+  Future<bool> snapshot2() async {
+    final result = await _channel.invokeMethod<bool>('snapshot');
+    return result!;
   }
 }

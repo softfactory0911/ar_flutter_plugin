@@ -129,6 +129,9 @@ internal class AndroidARView(
                                 handlerThread.quitSafely();
                             }, Handler(handlerThread.looper));
                         }
+                        "snapshot2" -> {
+                            result.success(false)
+                        }
                         "dispose" -> {
                             dispose()
                         }
