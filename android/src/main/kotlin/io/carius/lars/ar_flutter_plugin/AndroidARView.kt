@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.YuvImage
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -30,6 +32,7 @@ import io.flutter.plugin.platform.PlatformView
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.nio.FloatBuffer
+import java.nio.ByteBuffer
 import java.util.concurrent.CompletableFuture
 
 import android.R
@@ -90,6 +93,51 @@ internal class AndroidARView(
     private lateinit var sceneUpdateListener: com.google.ar.sceneform.Scene.OnUpdateListener
     private lateinit var onNodeTapListener: com.google.ar.sceneform.Scene.OnPeekTouchListener
 
+    // Image Data of Anchor Mapping Frame 
+    private lateinit var frameImage: ByteArray
+
+    // Frame to Bitmap
+    private fun extractBitmapWithFrame(frame: Frame): ByteArray? {
+        try {
+            val image = frame.acquireCameraImage()
+            val nv21: ByteArray
+            // Get the three planes.
+            val yBuffer = image.planes[0].buffer
+            val uBuffer = image.planes[1].buffer
+            val vBuffer = image.planes[2].buffer
+            val ySize = yBuffer.remaining()
+            val uSize = uBuffer.remaining()
+            val vSize = vBuffer.remaining()
+            nv21 = ByteArray(ySize + uSize + vSize)
+            //U and V are swapped
+            yBuffer.get(nv21, 0, ySize)
+            vBuffer.get(nv21, ySize, vSize)
+            uBuffer.get(nv21, ySize + vSize, uSize)
+            val width = image.width
+            val height = image.height
+            val out = ByteArrayOutputStream()
+            val yuv = YuvImage(nv21, ImageFormat.NV21, width, height, null)
+            yuv.compressToJpeg(Rect(0, 0, width, height), 100, out)
+            val data = out.toByteArray()
+            return data
+            /* 
+            val byteArray = out.toByteArray()
+            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            image.close()
+
+            val matrix = android.graphics.Matrix()
+            matrix.postRotate(90f)
+            val resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            bitmap.recycle()
+            return resizedBitmap
+            */
+        } catch (e: Exception) {
+            //e.printStackTrace();
+            return null
+        }
+
+    }
+
     // Method channel handlers
     private val onSessionMethodCall =
             object : MethodChannel.MethodCallHandler {
@@ -130,7 +178,10 @@ internal class AndroidARView(
                             }, Handler(handlerThread.looper));
                         }
                         "snapshot2" -> {
-                            result.success(false)
+                            var frame = arSceneView.frame;
+                            // var camera = arSceneView.arFrame?.getCamera()
+                            val data = extractBitmapWithFrame(frame)
+                            result.success(data)
                         }
                         "dispose" -> {
                             dispose()

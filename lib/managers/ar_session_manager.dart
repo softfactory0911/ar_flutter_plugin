@@ -116,8 +116,8 @@ class ARSessionManager {
     return MemoryImage(result!);
   }
 
-  Future<bool> snapshot2() async {
-    final result = await _channel.invokeMethod<bool>('snapshot');
-    return result!;
+  Future<ImageProvider> snapshot2() async {
+    final result = await _channel.invokeMethod<Uint8List>('snapshot2');
+    return MemoryImage(result!);
   }
 }
