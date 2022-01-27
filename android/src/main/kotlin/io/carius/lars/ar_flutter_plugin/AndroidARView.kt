@@ -6,6 +6,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.YuvImage
 import android.graphics.BitmapFactory
+import android.graphics.ImageFormat
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -178,7 +180,7 @@ internal class AndroidARView(
                             }, Handler(handlerThread.looper));
                         }
                         "snapshot2" -> {
-                            var frame = arSceneView.frame;
+                            var frame = arSceneView.arFrame;
                             // var camera = arSceneView.arFrame?.getCamera()
                             val data = extractBitmapWithFrame(frame)
                             result.success(data)
