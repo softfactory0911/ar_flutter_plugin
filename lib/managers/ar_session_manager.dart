@@ -116,8 +116,28 @@ class ARSessionManager {
     return MemoryImage(result!);
   }
 
-  Future<ImageProvider> snapshot2() async {
-    final result = await _channel.invokeMethod<Uint8List>('snapshot2');
-    return MemoryImage(result!);
+  Future<double?> measureWithSnapshot(double x0Px, double y0Px, double x1Px, double y1Px) async {
+    final distance = await _channel.invokeMethod<double>('measure', [x0Px, y0Px, x1Px, y1Px]);
+    return distance;
+  }
+
+  Future<bool> pause() async {
+    final result = await _channel.invokeMethod<bool>('pause');
+    return result!;
+  }
+
+  Future<bool> resume() async {
+    final result = await _channel.invokeMethod<bool>('resume');
+    return result!;
+  }
+
+  Future<bool> showPlane() async {
+    final result = await _channel.invokeMethod<bool>('show_plane');
+    return result!;
+  }
+
+  Future<bool> hidePlane() async {
+    final result = await _channel.invokeMethod<bool>('hide_plane');
+    return result!;
   }
 }

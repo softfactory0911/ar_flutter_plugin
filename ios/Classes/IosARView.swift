@@ -35,6 +35,38 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
     private var panningNode: SCNNode?
     private var panningNodeCurrentWorldLocation: SCNVector3?
 
+    // Image Data of Anchor Mapping Frame 
+    private var anchorMap: Dictionary<String, Array<Float>>? = nil
+    private let POINT_OFFSET = 20
+    private let REDUCE_RATE = 2.5
+
+    savePointMapInMeasureContext() {
+        let viewportSize = sceneView.bounds.size
+        let width = viewportSize.width
+        let height = viewportSize.height
+
+        if anchorMap == nil {
+            anchorMap = [String: Array<Double>]()
+        } else {
+            anchorMap.removeAll(false)
+        }
+        var x:Int = 0
+        while x < width {
+            var y:Int = 0
+            while y < heigh {
+                let point: CGPoint = .init(x: x, y:y)
+                let hitTestResults = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
+                guard let hitTestResult = hitTestResults.first else {
+                    continue
+                }
+                let sPoint = "${x}_${y}"
+                anchorMap[sPoint] = [hitTestResult.worldTransform.columns.3.x, hitTestResult.worldTransform.columns.3.y, hitTestResult.worldTransform.columns.3.z]
+                y = y + POINT_OFFSET
+            }
+            x = x + POINT_OFFSET
+        }
+    }
+
     init(
         frame: CGRect,
         viewIdentifier viewId: Int64,
@@ -72,11 +104,13 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 result(nil)
             }
 
+
     func onSessionMethodCalled(_ call :FlutterMethodCall, _ result:FlutterResult) {
-        let arguments = call.arguments as? Dictionary<String, Any>
+        
 
         switch call.method {
             case "init":
+                let arguments = call.arguments as? Dictionary<String, Any>
                 //self.sessionManagerChannel.invokeMethod("onError", arguments: ["SessionTEST from iOS"])
                 //result(nil)
                 initializeARView(arguments: arguments!, result: result)
@@ -90,6 +124,31 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 } else {
                     result(nil)
                 }
+            case "show_plane":
+                do {
+                    showPlanes = try true
+                    result(true)
+                } catch {
+                    result(nil)
+                }
+            case "hide_plane":
+                do {
+                    showPlanes = try false
+                    result(true)
+                } catch {
+                    result(nil)
+                }
+            case "measure":
+                let coordList = call.arguments as? Array<Double>
+                var x0: Int = Int((coordList[0] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
+                var y0: Int = Int((coordList[1] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
+                var x1: Int = Int((coordList[2] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
+                var y1: Int = Int((coordList[3] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
+                var p0Pose: List<Double> = anchorMap[String(format: "%d_%d", x0, y0)]
+                var p1Pose: List<Double> = anchorMap[String(format: "%d_%d", x1, y1)]
+                var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
+                result.success(distance)
+
             case "dispose":
                 onDispose(result)
                 result(nil)

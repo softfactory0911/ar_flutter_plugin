@@ -1,5 +1,5 @@
 package io.carius.lars.ar_flutter_plugin
-
+import kotlin.math.roundToInt
 import android.app.Activity
 import android.app.Application
 import android.content.Context
@@ -12,12 +12,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.SystemClock
 import android.util.Log
 import android.view.MotionEvent
 import android.view.PixelCopy
 import android.view.View
 import android.widget.Toast
 import com.google.ar.core.*
+import com.google.ar.core.Plane
+import com.google.ar.core.Point
+import com.google.ar.core.Pose
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.*
 import com.google.ar.sceneform.math.Vector3
@@ -96,48 +100,61 @@ internal class AndroidARView(
     private lateinit var onNodeTapListener: com.google.ar.sceneform.Scene.OnPeekTouchListener
 
     // Image Data of Anchor Mapping Frame 
-    private lateinit var frameImage: ByteArray
+    private var anchorMap: kotlin.collections.HashMap<String, List<Float>>? = null
 
-    // Frame to Bitmap
-    private fun extractBitmapWithFrame(frame: Frame): ByteArray? {
-        try {
-            val image = frame.acquireCameraImage()
-            val nv21: ByteArray
-            // Get the three planes.
-            val yBuffer = image.planes[0].buffer
-            val uBuffer = image.planes[1].buffer
-            val vBuffer = image.planes[2].buffer
-            val ySize = yBuffer.remaining()
-            val uSize = uBuffer.remaining()
-            val vSize = vBuffer.remaining()
-            nv21 = ByteArray(ySize + uSize + vSize)
-            //U and V are swapped
-            yBuffer.get(nv21, 0, ySize)
-            vBuffer.get(nv21, ySize, vSize)
-            uBuffer.get(nv21, ySize + vSize, uSize)
-            val width = image.width
-            val height = image.height
-            val out = ByteArrayOutputStream()
-            val yuv = YuvImage(nv21, ImageFormat.NV21, width, height, null)
-            yuv.compressToJpeg(Rect(0, 0, width, height), 100, out)
-            val data = out.toByteArray()
-            return data
-            /* 
-            val byteArray = out.toByteArray()
-            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-            image.close()
 
-            val matrix = android.graphics.Matrix()
-            matrix.postRotate(90f)
-            val resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-            bitmap.recycle()
-            return resizedBitmap
-            */
-        } catch (e: Exception) {
-            //e.printStackTrace();
-            return null
+    private val POINT_OFFSET = 20
+    private val REDUCE_RATE = 2.5
+    private fun savePointMapInMeasureContext(frame: com.google.ar.core.Frame) {
+        //중앙 좌표에서 멀어질수록 생기는 좌표 개수 구하는 알고리즘
+        val start = SystemClock.elapsedRealtime()
+        
+        val width: Int =  arSceneView.width
+        val height: Int =  arSceneView.height
+        if (anchorMap == null){
+            anchorMap = kotlin.collections.HashMap<String, List<Float>>(((width) / POINT_OFFSET + 1) * ((height) / POINT_OFFSET + 1))!!
+        } else {
+            anchorMap!!.clear()
         }
 
+        val end1 = SystemClock.elapsedRealtime()
+        
+        var x = 0
+        var cnt = 0
+        while (x < width) {
+            var y = 0
+            while (y < height) {
+                cnt += 1
+                val ar_pose = getHitPose(frame, x.toFloat(), y.toFloat())
+                if (ar_pose != null) {
+                    val arPointList = listOf(x.toFloat(), y.toFloat(), ar_pose.tx(), ar_pose.ty(), ar_pose.tz())
+                    val sPoint = "${x}_${y}"
+                    anchorMap!![sPoint] = arPointList
+                }
+                y = y + POINT_OFFSET
+            }
+            x = x + POINT_OFFSET
+        }
+        val end2 = SystemClock.elapsedRealtime()
+
+        println("-----set anchorMap = ${(end1-start).toString()}ms")
+        println("-----mapping = ${(end2 - end1).toString()}ms")
+        println("-----total = ${(end2 - start).toString()}ms")
+        
+        println("map size = ${anchorMap!!.size} / total cnt = ${cnt} / map init size = ${(width / POINT_OFFSET + 1) * (height / POINT_OFFSET + 1)}")
+        println("---------- Anchor mapping 완료 ----------")
+
+    }
+    private fun getHitPose(frame: com.google.ar.core.Frame, xPx: Float, yPx: Float): Pose? {
+        for (hit in frame.hitTest(xPx, yPx)) {
+            // Check if any plane was hit, and if it was hit inside the plane polygon.j
+            val trackable = hit.trackable
+            // Creates an anchor if a plane or an oriented point was hit.
+            if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose) || trackable is Point && trackable.orientationMode == Point.OrientationMode.ESTIMATED_SURFACE_NORMAL) {
+                return hit.createAnchor().pose
+            }
+        }
+        return null
     }
 
     // Method channel handlers
@@ -150,23 +167,39 @@ internal class AndroidARView(
                             initializeARView(call, result)
                         }
                         "snapshot" -> {
-                            var bitmap = Bitmap.createBitmap(arSceneView.width, arSceneView.height,
-                                    Bitmap.Config.ARGB_8888);
-
+                            var bitmap = Bitmap.createBitmap((arSceneView.width/REDUCE_RATE).toInt(), (arSceneView.height/REDUCE_RATE).toInt(), Bitmap.Config.ARGB_8888);
 
                             // Create a handler thread to offload the processing of the image.
                             var handlerThread = HandlerThread("PixelCopier");
                             handlerThread.start();
-                            // Make the request to copy.
+                            
+                            // 현재 이미지로 만드는 Frame의 Anchor를 저장한다.
+                            savePointMapInMeasureContext(arSceneView.arFrame!!)
+
+
+                            val start = SystemClock.elapsedRealtime()
+
+                            // Make the request to copy
                             PixelCopy.request(arSceneView, bitmap, { copyResult:Int ->
-                                Log.d(TAG, "PIXELCOPY DONE")
+                                val end1 = SystemClock.elapsedRealtime()
+                                println("-----PIXELCOPY DONE / ${(end1-start).toString()}ms")
                                 if (copyResult == PixelCopy.SUCCESS) {
                                     try {
                                         val mainHandler = Handler(context.mainLooper)
                                         val runnable = Runnable {
+                                            val end2 = SystemClock.elapsedRealtime()
+                                            println("-----runnable start (1->2) / ${(end2-end1).toString()}ms")                                            
                                             val stream = ByteArrayOutputStream()
-                                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+                                            bitmap.compress(Bitmap.CompressFormat.PNG, 75, stream)
+                                            //bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
                                             val data = stream.toByteArray()
+
+                                            bitmap.recycle()
+                                            stream.flush()
+                                            stream.close()
+                                            val end3 = SystemClock.elapsedRealtime()
+                                            println("-----bitmap tobyteArray end(2->3) / ${(end3-end2).toString()}ms")
+
                                             result.success(data)
                                         }
                                         mainHandler.post(runnable)
@@ -179,12 +212,67 @@ internal class AndroidARView(
                                 handlerThread.quitSafely();
                             }, Handler(handlerThread.looper));
                         }
-                        "snapshot2" -> {
-                            var frame = arSceneView.arFrame;
-                            // var camera = arSceneView.arFrame?.getCamera()
-                            val data = extractBitmapWithFrame(frame)
-                            result.success(data)
+
+                        "measure" -> {
+                            val coordList: ArrayList<Double>? = call.arguments as? ArrayList<Double>
+                            try {
+                                val x0: Int? = (coordList!![0] * REDUCE_RATE / POINT_OFFSET).roundToInt() * POINT_OFFSET
+                                val y0: Int? = (coordList!![1] * REDUCE_RATE / POINT_OFFSET).roundToInt() * POINT_OFFSET
+                                val x1: Int? = (coordList!![2] * REDUCE_RATE / POINT_OFFSET).roundToInt() * POINT_OFFSET
+                                val y1: Int? = (coordList!![3] * REDUCE_RATE / POINT_OFFSET).roundToInt() * POINT_OFFSET
+                                val p0Pose: List<Float>? = anchorMap!!["${x0}_${y0}"]
+                                val p1Pose: List<Float>? = anchorMap!!["${x1}_${y1}"]
+                                val distance = Math.sqrt(Math.pow((p0Pose!![2] - p1Pose!![2]).toDouble(), 2.0) 
+                                    + Math.pow((p0Pose!![3] - p1Pose!![3]).toDouble(), 2.0) 
+                                    + Math.pow((p0Pose!![4] - p1Pose!![4]).toDouble(), 2.0)
+                                    ).toFloat()
+                                ArSceneView.reclaimReleasedResources()
+                                //Runtime.getRuntime().gc();
+
+                                result.success(distance)
+                                
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                result.success(null)
+                            }
                         }
+                        "pause" -> {
+                            try {
+                                onPause()
+                                result.success(true)
+                            } catch (e: Exception){
+                                e.printStackTrace()
+                                result.success(false)
+                            }
+                        }
+                        "resume" -> {
+                            try {
+                                onResume()
+                                result.success(true)
+                            } catch (e: Exception){
+                                e.printStackTrace()
+                                result.success(false)
+                            }
+                        }
+                        "show_plane" -> {
+                            try {
+                                arSceneView.planeRenderer.setVisible(true)
+                                result.success(true)
+                            } catch (e: Exception){
+                                e.printStackTrace()
+                                result.success(false)
+                            }                            
+                        }
+                        "hide_plane" -> {
+                            try {
+                                arSceneView.planeRenderer.setVisible(false)
+                                result.success(true)
+                            } catch (e: Exception){
+                                e.printStackTrace()
+                                result.success(false)
+                            }                            
+                        }
+
                         "dispose" -> {
                             dispose()
                         }
@@ -332,11 +420,19 @@ internal class AndroidARView(
     override fun dispose() {
         // Destroy AR session
         Log.d(TAG, "dispose called")
+        println("-----[Native] dispose called")
         try {
+            if (anchorMap != null){
+                anchorMap!!.clear()
+                anchorMap = null
+            }
             onPause()
+            ArSceneView.reclaimReleasedResources()
             onDestroy()
             ArSceneView.destroyAllResources()
+            Runtime.getRuntime().gc();
         } catch (e: Exception) {
+            println("----- Native dispose error")
             e.printStackTrace()
         }
     }
@@ -407,6 +503,7 @@ internal class AndroidARView(
 
                     override fun onActivityDestroyed(activity: Activity) {
                         Log.d(TAG, "onActivityDestroyed")
+                        ArSceneView.reclaimReleasedResources()
 //                        onPause()
 //                        onDestroy()
                     }
@@ -469,10 +566,13 @@ internal class AndroidARView(
         }
 
         try {
+            ArSceneView.reclaimReleasedResources()
             arSceneView.resume()
         } catch (ex: CameraNotAvailableException) {
             Log.d(TAG, "Unable to get camera" + ex)
             activity.finish()
+            return
+        } catch (e: Exception) {
             return
         }
     }
