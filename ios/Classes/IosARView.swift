@@ -56,7 +56,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 guard let hitTestResult = hitTestResults.first else {
                     continue
                 }
-                let sPoint = "${x}_${y}"
+                let sPoint: String = "${x}_${y}"
                 anchorMap[sPoint] = [
                     Float(hitTestResult.worldTransform.columns.3.x), 
                     Float(hitTestResult.worldTransform.columns.3.y), 
@@ -143,13 +143,15 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 }
                 break
             case "measure":
-                let coordList? = call.arguments as? Array<Double>
+
+                let coordList = call.arguments as? Array<Double>
+
                 var x0: Int = Int((coordList[0] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
                 var y0: Int = Int((coordList[1] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
                 var x1: Int = Int((coordList[2] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
                 var y1: Int = Int((coordList[3] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
-                var p0Pose: List<Double> = anchorMap[String(format: "%d_%d", x0, y0)]
-                var p1Pose: List<Double> = anchorMap[String(format: "%d_%d", x1, y1)]
+                var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)]
+                var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)]
                 var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
                 result.success(distance)
                 break
