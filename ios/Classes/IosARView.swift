@@ -42,11 +42,11 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
     func savePointMapInMeasureContext() {
         let viewportSize = sceneView.bounds.size
-        let width = viewportSize.width
-        let height = viewportSize.height
+        let width = Float(viewportSize.width)
+        let height = Float(viewportSize.height)
 
         if anchorMap == nil {
-            anchorMap = [String: Array<Double>]()
+            anchorMap = Dictionary<String, Array<Float>>()
         } else {
             anchorMap.removeAll(false)
         }
@@ -139,7 +139,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     result(nil)
                 }
             case "measure":
-                let coordList = call.arguments as? Array<Double>
+                let coordList? = call.arguments as? Array<Double>
                 var x0: Int = Int((coordList[0] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
                 var y0: Int = Int((coordList[1] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
                 var x1: Int = Int((coordList[2] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
