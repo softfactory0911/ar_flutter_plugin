@@ -143,19 +143,19 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 }
                 break
             case "measure":
-
-                let coordList = call.arguments as? Array<Double>
-                if let coordX0 = coordList[0], coordY0 = coordList[1], coordX1 = coordList[2], coordY1 = coordList[3] {
-                    var x0: Int = Int((coordX0 * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var y0: Int = Int((coordY0 * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var x1: Int = Int((coordX1 * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var y1: Int = Int((coordY1 * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                do {
+                    let coordList = call.arguments as? Array<Double>
+                    let unWrapCoordList = coordList.compactMap { $0 }
+                    var x0: Int = try Int((unWrapCoordList[0] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
+                    var y0: Int = try Int((unWrapCoordList[1] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var x1: Int = try Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var y1: Int = try Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)]
                     var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)]
                     var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
                     result.success(distance)
-                } else {
-                    result.success(-1)
+                } catch {
+                    result(nil)
                 }
 
                 break
