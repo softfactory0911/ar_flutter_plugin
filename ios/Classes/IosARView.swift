@@ -40,7 +40,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
     private let POINT_OFFSET = 20
     private let REDUCE_RATE = 2.5
 
-    savePointMapInMeasureContext() {
+    func savePointMapInMeasureContext() {
         let viewportSize = sceneView.bounds.size
         let width = viewportSize.width
         let height = viewportSize.height
