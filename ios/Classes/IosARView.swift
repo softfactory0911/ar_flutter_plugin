@@ -45,11 +45,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         let width = Float(viewportSize.width)
         let height = Float(viewportSize.height)
 
-        if anchorMap == nil {
-            anchorMap = Dictionary<String, Array<Float>>()
-        } else {
-            anchorMap.removeAll(false)
-        }
+        anchorMap = Dictionary<String, Array<Float>>()
+        
         var x:Int = 0
         while x < width {
             var y:Int = 0
@@ -124,6 +121,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 } else {
                     result(nil)
                 }
+                break
             case "show_plane":
                 do {
                     showPlanes = try true
@@ -131,6 +129,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 } catch {
                     result(nil)
                 }
+                break
             case "hide_plane":
                 do {
                     showPlanes = try false
@@ -138,6 +137,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 } catch {
                     result(nil)
                 }
+                break
             case "measure":
                 let coordList? = call.arguments as? Array<Double>
                 var x0: Int = Int((coordList[0] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
@@ -148,7 +148,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 var p1Pose: List<Double> = anchorMap[String(format: "%d_%d", x1, y1)]
                 var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
                 result.success(distance)
-
+                break
             case "dispose":
                 onDispose(result)
                 result(nil)
