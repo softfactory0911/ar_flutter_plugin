@@ -36,7 +36,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
     private var panningNodeCurrentWorldLocation: SCNVector3?
 
     // Image Data of Anchor Mapping Frame 
-    private var anchorMap: Dictionary<String, Array<Float>>? = nil
+    private var anchorMap: Dictionary<String, Array<Float>> = Dictionary<String, Array<Float>>()
     private let POINT_OFFSET = 20
     private let REDUCE_RATE = 2.5
 
@@ -146,10 +146,10 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
                 let coordList = call.arguments as? Array<Double>
 
-                var x0: Int = Int((coordList[0] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
-                var y0: Int = Int((coordList[1] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
-                var x1: Int = Int((coordList[2] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
-                var y1: Int = Int((coordList[3] * REDUCE_RATE / POINT_OFFSET).rounded()) * POINT_OFFSET
+                var x0: Int = Int((coordList[0] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                var y0: Int = Int((coordList[1] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                var x1: Int = Int((coordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                var y1: Int = Int((coordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                 var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)]
                 var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)]
                 var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
