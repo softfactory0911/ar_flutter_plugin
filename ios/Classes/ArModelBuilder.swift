@@ -6,7 +6,7 @@ import Combine
 
 // Responsible for creating Renderables and Nodes
 class ArModelBuilder: NSObject {
-    let image: UIImage
+    var image: UIImage? = nil
     func makePlane(anchor: ARPlaneAnchor, flutterAssetFile: String?) -> SCNNode {
         let plane = SCNPlane(width: CGFloat(anchor.extent.x), height: CGFloat(anchor.extent.z))
         //Create material
@@ -55,7 +55,7 @@ class ArModelBuilder: NSObject {
                 if (showPlanes) {
                     // 여기서 color를 안건들면 원래 색상이 될까 투명이 유지될까?
                     // gridMaterial.diffuse.contents = UIColor(white: 1, alpha: 0.99)
-                    gridMaterial.diffuse.contents = image
+                    gridMaterial.diffuse.contents = image ?? UIColor(white: 1, alpha: 0.01)
                     gridMaterial.diffuse.wrapS = .repeat
                     gridMaterial.diffuse.wrapT = .repeat                    
                 } else {
