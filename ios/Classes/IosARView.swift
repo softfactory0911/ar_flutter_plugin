@@ -56,7 +56,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 guard let hitTestResult = hitTestResults.first else {
                     continue
                 }
-                let sPoint: String = "${x}_${y}"
+                let sPoint: String = String(format: "%d_%d", x, y)
                 anchorMap[sPoint] = [
                     Float(hitTestResult.worldTransform.columns.3.x), 
                     Float(hitTestResult.worldTransform.columns.3.y), 
