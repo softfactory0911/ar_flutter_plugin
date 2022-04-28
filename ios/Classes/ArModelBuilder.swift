@@ -54,11 +54,10 @@ class ArModelBuilder: NSObject {
                 gridMaterial.diffuse.contentsTransform = SCNMatrix4MakeScale(anchor.extent.x * repeatAmount, anchor.extent.z * repeatAmount, 1)
                 if (showPlanes) {
                     // 여기서 color를 안건들면 원래 색상이 될까 투명이 유지될까?
-                    //gridMaterial.diffuse.contents = UIColor(red: 1, green: 0.2, blue: 0.5, alpha: 0.99)
-                    //gridMaterial.diffuse.contents = UIColor(white: 1, alpha: 0.99)
+                    gridMaterial.diffuse.contents = UIColor(white: 1, alpha: 0.99)
                 } else {
-                    // gridMaterial.diffuse.contents = UIColor(white: 1, alpha: 0.01)
-                    gridMaterial.diffuse.contents = UIColor(red: 1, green: 0.2, blue: 0.5, alpha: 0.99)
+                    gridMaterial.diffuse.contents = UIColor(white: 1, alpha: 0.01)
+                    
                 }
                 
             }
