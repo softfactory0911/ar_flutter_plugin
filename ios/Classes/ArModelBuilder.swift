@@ -3,6 +3,7 @@ import Foundation
 import ARKit
 import GLTFSceneKit
 import Combine
+import UIColor
 
 // Responsible for creating Renderables and Nodes
 class ArModelBuilder: NSObject {
@@ -52,6 +53,7 @@ class ArModelBuilder: NSObject {
             let repeatAmount: Float = 1000 / imageSize //how often per meter we need to repeat the image
             if let gridMaterial = plane.materials.first {
                 gridMaterial.diffuse.contentsTransform = SCNMatrix4MakeScale(anchor.extent.x * repeatAmount, anchor.extent.z * repeatAmount, 1)
+                gridMaterial.diffuse.contents = UIColor.blueColor()
             }
         }
        planeNode.position = SCNVector3Make(anchor.center.x, 0, anchor.center.z)

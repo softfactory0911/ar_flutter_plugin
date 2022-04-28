@@ -401,8 +401,6 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
             trackedPlanes[anchor.identifier] = (node, plane)
             if (showPlanes) {
                 node.addChildNode(plane)
-            } else {
-                node.removeFromParentNode()
             }
         }
     }
