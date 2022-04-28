@@ -143,21 +143,21 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                         var x1: Int = try Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                         var y1: Int = try Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                         guard var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] else {
-                            result(nil)
+                            result(5)
                             break
                         }
                         guard var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] else {
-                            result(nil)
+                            result(4)
                             break
                         }
                         var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
                         result(distance)
                     } else {
-                        result(nil)    
+                        result(3)    
                     }
                     break
                 } catch {
-                    result(nil)
+                    result(2)
                 }
 
                 break
