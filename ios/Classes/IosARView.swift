@@ -127,20 +127,12 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 }
                 break
             case "show_plane":
-                do {
-                    showPlanes = try true
-                    result(true)
-                } catch {
-                    result(nil)
-                }
+                showPlanes = true                
+                result(true)
                 break
             case "hide_plane":
-                do {
-                    showPlanes = try false
-                    result(true)
-                } catch {
-                    result(nil)
-                }
+                showPlanes = false                 
+                result(true)
                 break
             case "measure":
                 do {
@@ -416,7 +408,12 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         
         if let planeAnchor = anchor as? ARPlaneAnchor, let plane = trackedPlanes[anchor.identifier] {
-            modelBuilder.updatePlaneNode(planeNode: plane.1, anchor: planeAnchor)
+            if (showPlanes) {
+                modelBuilder.updatePlaneNode(planeNode: plane.1, anchor: planeAnchor)
+            } else {
+                // modelBuilder.updatePlaneNode(planeNode: plane.1, anchor: planeAnchor)
+            }
+            
         }
     }
 
