@@ -119,6 +119,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
             case "snapshot":
                 // call the SCNView Snapshot method and return the Image
                 let snapshotImage = sceneView.snapshot()
+                savePointMapInMeasureContext()
                 if let bytes = snapshotImage.pngData() {
                     let data = FlutterStandardTypedData(bytes:bytes)
                     result(data)
