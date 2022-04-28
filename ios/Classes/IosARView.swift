@@ -135,31 +135,25 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 result(true)
                 break
             case "measure":
-                do {
-                    let coordList = call.arguments as? Array<Double>
-                    if let unWrapCoordList = coordList {
-                        var x0: Int = try Int((unWrapCoordList[0] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
-                        var y0: Int = try Int((unWrapCoordList[1] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                        var x1: Int = try Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                        var y1: Int = try Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                        guard var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] else {
-                            result(5)
-                            break
-                        }
-                        guard var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] else {
-                            result(4)
-                            break
-                        }
-                        var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
-                        result(distance)
-                    } else {
-                        result(3)    
+                let coordList = call.arguments as? Array<Double>
+                if let unWrapCoordList = coordList {
+                    var x0: Int = Int((unWrapCoordList[0] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
+                    var y0: Int = Int((unWrapCoordList[1] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var x1: Int = Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var y1: Int = Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    guard var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] else {
+                        result(Double(5))
+                        break
                     }
-                    break
-                } catch {
-                    result(2)
+                    guard var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] else {
+                        result(Double(4))
+                        break
+                    }
+                    var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
+                    result(distance)
+                } else {
+                    result(Double(3))    
                 }
-
                 break
             case "dispose":
                 onDispose(result)
