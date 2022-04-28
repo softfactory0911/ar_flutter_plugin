@@ -16,9 +16,10 @@ class ArModelBuilder: NSObject {
         if let textureSourcePath = flutterAssetFile {
             // Use given asset as plane texture
             let key = FlutterDartProject.lookupKey(forAsset: textureSourcePath)
-            if image = UIImage(named: key, in: Bundle.main,compatibleWith: nil){
+            if let planeImage = UIImage(named: key, in: Bundle.main,compatibleWith: nil){
                 // Asset was found so we can use it
-                material.diffuse.contents = image
+                image = planeImage
+                material.diffuse.contents = planeImage
                 material.diffuse.wrapS = .repeat
                 material.diffuse.wrapT = .repeat
                 plane.materials = [material]
