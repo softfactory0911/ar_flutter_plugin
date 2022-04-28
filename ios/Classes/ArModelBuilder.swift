@@ -53,7 +53,7 @@ class ArModelBuilder: NSObject {
             if let gridMaterial = plane.materials.first {
                 gridMaterial.diffuse.contentsTransform = SCNMatrix4MakeScale(anchor.extent.x * repeatAmount, anchor.extent.z * repeatAmount, 1)
                 if (showPlanes) {
-                    gridMaterial.diffuse.contents = UIColor(red: 0.5, alpha: 0.99)
+                    // gridMaterial.diffuse.contents = UIColor(red: 0.5, alpha: 0.99)
                 } else {
                     gridMaterial.diffuse.contents = UIColor(white: 1, alpha: 0.01)
                 }
