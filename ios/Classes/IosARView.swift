@@ -53,7 +53,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
             while Float(y) < height {
                 let point: CGPoint = .init(x: x, y:y)
                 let hitTestResults = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
-                if let hitTestResult = hitTestResults.first else {
+                if let hitTestResult = hitTestResults.first {
                     let sPoint: String = String(format: "%d_%d", x, y)
                     anchorMap[sPoint] = [
                         Float(hitTestResult.worldTransform.columns.3.x), 
