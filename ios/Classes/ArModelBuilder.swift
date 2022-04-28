@@ -3,7 +3,6 @@ import Foundation
 import ARKit
 import GLTFSceneKit
 import Combine
-import UIColor
 
 // Responsible for creating Renderables and Nodes
 class ArModelBuilder: NSObject {
