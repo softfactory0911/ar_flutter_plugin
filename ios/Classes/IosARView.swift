@@ -408,7 +408,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         
         if let planeAnchor = anchor as? ARPlaneAnchor, let plane = trackedPlanes[anchor.identifier] {
-            modelBuilder.updatePlaneNode(planeNode: plane.1, anchor: planeAnchor)
+            modelBuilder.updatePlaneNode(planeNode: plane.1, anchor: planeAnchor, showPlanes: showPlanes)
         }
     }
 
