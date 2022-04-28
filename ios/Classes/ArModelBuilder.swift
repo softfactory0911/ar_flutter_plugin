@@ -52,7 +52,7 @@ class ArModelBuilder: NSObject {
             let repeatAmount: Float = 1000 / imageSize //how often per meter we need to repeat the image
             if let gridMaterial = plane.materials.first {
                 gridMaterial.diffuse.contentsTransform = SCNMatrix4MakeScale(anchor.extent.x * repeatAmount, anchor.extent.z * repeatAmount, 1)
-                gridMaterial.diffuse.contents = .blue
+                gridMaterial.diffuse.contents = UIColor(white: 1.0,alpha: 0.3)
             }
         }
        planeNode.position = SCNVector3Make(anchor.center.x, 0, anchor.center.z)
