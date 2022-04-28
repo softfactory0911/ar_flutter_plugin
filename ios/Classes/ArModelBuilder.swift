@@ -42,7 +42,7 @@ class ArModelBuilder: NSObject {
         return planeNode
     }
 
-    func updatePlaneNode(planeNode: SCNNode, anchor: ARPlaneAnchor){
+    func updatePlaneNode(planeNode: SCNNode, anchor: ARPlaneAnchor, showPlanes: Bool){
         if let plane = planeNode.geometry as? SCNPlane {
             // Update plane dimensions
             plane.width = CGFloat(anchor.extent.x)
@@ -52,7 +52,12 @@ class ArModelBuilder: NSObject {
             let repeatAmount: Float = 1000 / imageSize //how often per meter we need to repeat the image
             if let gridMaterial = plane.materials.first {
                 gridMaterial.diffuse.contentsTransform = SCNMatrix4MakeScale(anchor.extent.x * repeatAmount, anchor.extent.z * repeatAmount, 1)
-                gridMaterial.diffuse.contents = UIColor(white: 1.0,alpha: 0.3)
+                if (showPlanes) {
+                    gridMaterial.diffuse.contents = UIColor(red: 0.5, alpha: 0.99)
+                } else {
+                    gridMaterial.diffuse.contents = UIColor(white: 1, alpha: 0.01)
+                }
+                
             }
         }
        planeNode.position = SCNVector3Make(anchor.center.x, 0, anchor.center.z)
