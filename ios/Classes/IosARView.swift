@@ -51,8 +51,10 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         while Float(x) < width {
             var y:Int = 0
             while Float(y) < height {
-                let point: CGPoint = .init(x: x, y:y)
-                let hitTestResults = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
+                //let point: CGPoint = .init(x: x, y:y)
+                let point: CGPoint = CGPointMake(CGFloat(Float(x)), CGFloat(Float(y)))
+                // let hitTestResults = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
+                let hitTestResults = sceneView.hitTest(point, types: .featurePoint)
                 if let hitTestResult = hitTestResults.first {
                     let sPoint: String = String(format: "%d_%d", x, y)
                     anchorMap[sPoint] = [
@@ -143,6 +145,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     //var y0: Int = Int((unWrapCoordList[1] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     //var x1: Int = Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     //var y1: Int = Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    // [5.5,5.4,5.3]
                     var x0: Int = Int((unWrapCoordList[0] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
                     var y0: Int = Int((unWrapCoordList[1] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     var x1: Int = Int((unWrapCoordList[2] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
