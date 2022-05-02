@@ -51,8 +51,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         while Float(x) < width {
             var y:Int = 0
             while Float(y) < height {
-                //let point: CGPoint = .init(x: x, y:y)
-                let point: CGPoint = CGPointMake(CGFloat(Float(x)), CGFloat(Float(y)))
+                let point: CGPoint = .init(x: x, y:y)
                 // let hitTestResults = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
                 let hitTestResults = sceneView.hitTest(point, types: .featurePoint)
                 if let hitTestResult = hitTestResults.first {
