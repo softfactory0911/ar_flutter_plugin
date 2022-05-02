@@ -41,9 +41,16 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
     private let REDUCE_RATE = 2.5
 
     func savePointMapInMeasureContext() {
-        let viewportSize = sceneView.bounds.size
-        let width = Float(viewportSize.width)
-        let height = Float(viewportSize.height)
+        //let viewportSize = sceneView.bounds.size
+        //let width = Float(viewportSize.width)
+        //let height = Float(viewportSize.height)
+
+        let screenBounds = UIScreen.main.bounds
+        let screen_width = screenBounds.width
+        let screen_height = screenBounds.height
+        let screenScale = UIScreen.main.scale
+        let width = Float(screen_width * screenScale)
+        let height = Float(screen_height * screenScale)
 
         anchorMap = Dictionary<String, Array<Float>>()
 
