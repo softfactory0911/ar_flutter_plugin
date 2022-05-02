@@ -79,8 +79,10 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                         Float(hitTestResult.worldTransform.columns.3.y), 
                         Float(hitTestResult.worldTransform.columns.3.z)
                         ]
+                } else {
+                    anchorMap[sPoint] = anchorMap[sPoint] ?? [10.0 ,10.0, 10.0]
                 }
-                anchorMap[sPoint] = anchorMap[sPoint] ?? [10.0 ,10.0, 10.0]
+                
 
                 y = y + POINT_OFFSET
             }
@@ -168,18 +170,20 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                     var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
                     if (p0Pose[0] == 10 && p1Pose[0] == 10) {
-                        result(Double(101010))
+                        result(Double(151515))
                     } else if(p0Pose[0] == 1){
                         result(Double(111))
                     } else if(p0Pose[0] == 10){
-                        result(Double(111000))
+                        result(Double(111555))
                     } else if(p1Pose[0] == 3){
                         result(Double(333))
                     } else if(p1Pose[0] == 10){
-                        result(Double(333000))
-                    }
+                        result(Double(333555))
+                    } else {
                     var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
                     result(distance)
+                    }
+
                 } else {
                     result(Double(3))    
                 }
