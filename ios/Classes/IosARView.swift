@@ -47,22 +47,32 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
         anchorMap = Dictionary<String, Array<Float>>()
 
+        let planeTypes: ARHitTestResult.ResultType
+        if #available(iOS 11.3, *){
+            planeTypes = ARHitTestResult.ResultType([.existingPlaneUsingGeometry, .featurePoint])
+        }else {
+            planeTypes = ARHitTestResult.ResultType([.existingPlaneUsingExtent, .featurePoint])
+        }
+
         var x:Int = 0
         while Float(x) < width {
             var y:Int = 0
             while Float(y) < height {
                 let point: CGPoint = .init(x: x, y:y)
+
+                let sPoint: String = String(format: "%d_%d", x, y)
+                let hitTestResults = sceneView.hitTest(point, types: planeTypes)
                 // let hitTestResults = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
-                let hitTestResults = sceneView.hitTest(point, types: .featurePoint)
+
                 if let hitTestResult = hitTestResults.first {
-                    let sPoint: String = String(format: "%d_%d", x, y)
                     anchorMap[sPoint] = [
                         Float(hitTestResult.worldTransform.columns.3.x), 
                         Float(hitTestResult.worldTransform.columns.3.y), 
                         Float(hitTestResult.worldTransform.columns.3.z)
                         ]
-                    anchorMap[sPoint] = anchorMap[sPoint] ?? [5.5,5.4,5.3]
+                    
                 }
+                anchorMap[sPoint] = anchorMap[sPoint] ?? [10.0 ,10.0, 10.0]
 
                 y = y + POINT_OFFSET
             }
@@ -109,8 +119,6 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
 
     func onSessionMethodCalled(_ call :FlutterMethodCall, _ result:FlutterResult) {
-        
-
         switch call.method {
             case "init":
                 let arguments = call.arguments as? Dictionary<String, Any>
