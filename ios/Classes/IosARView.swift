@@ -49,8 +49,10 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         let screen_width = screenBounds.width
         let screen_height = screenBounds.height
         let screenScale = UIScreen.main.scale
-        let width = Float(screen_width * screenScale)
-        let height = Float(screen_height * screenScale)
+        //let width = Float(screen_width * screenScale)
+        //let height = Float(screen_height * screenScale)
+        let width = Float(screen_width)
+        let height = Float(screen_height)
 
         anchorMap = Dictionary<String, Array<Float>>()
 
@@ -77,7 +79,6 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                         Float(hitTestResult.worldTransform.columns.3.y), 
                         Float(hitTestResult.worldTransform.columns.3.z)
                         ]
-                    
                 }
                 anchorMap[sPoint] = anchorMap[sPoint] ?? [10.0 ,10.0, 10.0]
 
@@ -166,6 +167,17 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     var y1: Int = Int((unWrapCoordList[3] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                     var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
+                    if (p0Pose[0] == 10 && p1Pose[0] == 10) {
+                        result(Double(101010))
+                    } else if(p0Pose[0] == 1){
+                        result(Double(111))
+                    } else if(p0Pose[0] == 10){
+                        result(Double(111000))
+                    } else if(p1Pose[0] == 3){
+                        result(Double(333))
+                    } else if(p1Pose[0] == 10){
+                        result(Double(333000))
+                    }
                     var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
                     result(distance)
                 } else {
