@@ -169,6 +169,10 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     var y1: Int = Int((unWrapCoordList[3] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                     var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
+
+                    result(anchorMap.count)
+                    break
+
                     if (p0Pose[0] == 10 && p1Pose[0] == 10) {
                         result(Double(151515))
                     } else if(p0Pose[0] == 1){
