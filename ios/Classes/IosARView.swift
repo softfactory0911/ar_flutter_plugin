@@ -49,10 +49,12 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         let screen_width = screenBounds.width
         let screen_height = screenBounds.height
         let screenScale = UIScreen.main.scale
-        //let width = Float(screen_width * screenScale)
-        //let height = Float(screen_height * screenScale)
-        let width = Float(screen_width)
-        let height = Float(screen_height)
+        let width = Float(screen_width * screenScale)
+        let height = Float(screen_height * screenScale)
+        let width = screenSize.size.width 
+        let height = screenSize.size.height
+        //let width = Float(screen_width)
+        //let height = Float(screen_height)
 
         anchorMap = Dictionary<String, Array<Float>>()
 
@@ -174,12 +176,14 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     let screen_width = screenBounds.width
                     let screen_height = screenBounds.height
                     let screenScale = UIScreen.main.scale
-                    let width = Float(screen_width * screenScale)
-                    let height = Float(screen_height * screenScale)
+                    //let width = Float(screen_width * screenScale)
+                    //let height = Float(screen_height * screenScale)
                     //let width = Float(screen_width)
                     //let height = Float(screen_height)
+                    let width = screenSize.size.width 
+                    let height = screenSize.size.height                    
 
-                    result(Double(Float(width) * Float(height) / Float(POINT_OFFSET)))
+                    result(Double('\(width)00\(height)'))
                     break
                     // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
                     if (p0Pose[0] == 10 && p1Pose[0] == 10) {
