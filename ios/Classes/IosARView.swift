@@ -49,10 +49,12 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         let screen_width = screenBounds.width
         let screen_height = screenBounds.height
         let screenScale = UIScreen.main.scale
-        let width = Float(screen_width * screenScale)
-        let height = Float(screen_height * screenScale)
+        //let width = Float(screen_width * screenScale)
+        //let height = Float(screen_height * screenScale)
         //let width = Float(screen_width)
         //let height = Float(screen_height)
+        let width = UIScreen.main.bounds.size.width
+        let height = UIScreen.main.bounds.size.height        
 
         anchorMap = Dictionary<String, Array<Float>>()
 
@@ -163,26 +165,13 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     //var x1: Int = Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     //var y1: Int = Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     // [5.5,5.4,5.3]
-                    var x0: Int = Int((unWrapCoordList[0] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
-                    var y0: Int = Int((unWrapCoordList[1] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var x1: Int = Int((unWrapCoordList[2] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var y1: Int = Int((unWrapCoordList[3] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var x0: Int = Int((unWrapCoordList[0] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
+                    var y0: Int = Int((unWrapCoordList[1] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var x1: Int = Int((unWrapCoordList[2] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var y1: Int = Int((unWrapCoordList[3] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                     var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
                     
-                    let screenBounds = UIScreen.main.bounds
-                    let screen_width = screenBounds.width
-                    let screen_height = screenBounds.height
-                    let screenScale = UIScreen.main.scale
-                    //let width = Float(screen_width * screenScale)
-                    //let height = Float(screen_height * screenScale)
-                    //let width = Float(screen_width)
-                    //let height = Float(screen_height)
-                    let width = UIScreen.main.bounds.size.width
-                    let height = UIScreen.main.bounds.size.height
-
-                    result(Double(Float(width) * Float(height)))
-                    break
                     // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
                     if (p0Pose[0] == 10 && p1Pose[0] == 10) {
                         result(Double(151515))
