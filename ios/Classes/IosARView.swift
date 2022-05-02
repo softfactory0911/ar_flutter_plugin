@@ -170,9 +170,9 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                     var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
 
-                    result(anchorMap.count)
+                    result(Double(anchorMap.count))
                     break
-
+                    // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
                     if (p0Pose[0] == 10 && p1Pose[0] == 10) {
                         result(Double(151515))
                     } else if(p0Pose[0] == 1){
