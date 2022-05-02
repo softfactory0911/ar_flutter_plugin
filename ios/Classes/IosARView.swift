@@ -51,8 +51,6 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         let screenScale = UIScreen.main.scale
         let width = Float(screen_width * screenScale)
         let height = Float(screen_height * screenScale)
-        let width = screenSize.size.width 
-        let height = screenSize.size.height
         //let width = Float(screen_width)
         //let height = Float(screen_height)
 
@@ -178,10 +176,10 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     let screenScale = UIScreen.main.scale
                     //let width = Float(screen_width * screenScale)
                     //let height = Float(screen_height * screenScale)
-                    let width1 = Float(screen_width)
-                    let height1 = Float(screen_height)
-                    let width = screenSize.size.width 
-                    let height = screenSize.size.height                    
+                    //let width = Float(screen_width)
+                    //let height = Float(screen_height)
+                    let width = UIScreen.main.bounds.size.width 
+                    let height = UIScreen.main.bounds.size.height                    
 
                     result(Double('\(width)00\(height)\(width1)00\(height1)'))
                     break
