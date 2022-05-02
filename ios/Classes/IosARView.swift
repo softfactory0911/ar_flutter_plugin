@@ -139,10 +139,14 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
             case "measure":
                 let coordList = call.arguments as? Array<Double>
                 if let unWrapCoordList = coordList {
-                    var x0: Int = Int((unWrapCoordList[0] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
-                    var y0: Int = Int((unWrapCoordList[1] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var x1: Int = Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var y1: Int = Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    //var x0: Int = Int((unWrapCoordList[0] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
+                    //var y0: Int = Int((unWrapCoordList[1] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    //var x1: Int = Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    //var y1: Int = Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var x0: Int = Int((unWrapCoordList[0] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
+                    var y0: Int = Int((unWrapCoordList[1] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var x1: Int = Int((unWrapCoordList[2] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                    var y1: Int = Int((unWrapCoordList[3] / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                     var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
                     var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
