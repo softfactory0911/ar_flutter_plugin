@@ -175,6 +175,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
                     if (p0Pose[0] == 10 && p1Pose[0] == 10) {
                         result(Double(151515))
+                    } else if(p0Pose[0] == 1 && p1Pose[0] == 3){
+                        result(Double(1313))
                     } else if(p0Pose[0] == 1){
                         result(Double(111))
                     } else if(p0Pose[0] == 10){
