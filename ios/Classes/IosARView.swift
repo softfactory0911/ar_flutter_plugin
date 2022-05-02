@@ -181,7 +181,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     let width = UIScreen.main.bounds.size.width 
                     let height = UIScreen.main.bounds.size.height                    
 
-                    result(Double('\(width)00\(height)'))
+                    result(Double("\(width)00\(height)"))
                     break
                     // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
                     if (p0Pose[0] == 10 && p1Pose[0] == 10) {
