@@ -53,8 +53,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         //let height = Float(screen_height * screenScale)
         //let width = Float(screen_width)
         //let height = Float(screen_height)
-        let width = UIScreen.main.bounds.size.width
-        let height = UIScreen.main.bounds.size.height        
+        let width = Float(UIScreen.main.bounds.size.width)
+        let height = Float(UIScreen.main.bounds.size.height)
 
         anchorMap = Dictionary<String, Array<Float>>()
 
