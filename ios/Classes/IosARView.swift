@@ -159,46 +159,48 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 break
             case "measure":
                 let coordList = call.arguments as? Array<Double>
-                if let unWrapCoordList = coordList {
-                    //var x0: Int = Int((unWrapCoordList[0] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
-                    //var y0: Int = Int((unWrapCoordList[1] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    //var x1: Int = Int((unWrapCoordList[2] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    //var y1: Int = Int((unWrapCoordList[3] * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    // [5.5,5.4,5.3]
-                    var x0: Int = Int((unWrapCoordList[0] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
-                    var y0: Int = Int((unWrapCoordList[1] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var x1: Int = Int((unWrapCoordList[2] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var y1: Int = Int((unWrapCoordList[3] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                    var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
-                    var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
+                let arguments = call.arguments as? Dictionary<String, Any>
+                // x0Px, y0Px, x1Px, y1Px
+                arguments!["x0Px"]
+                let x0Px:Double = arguments!["x0Px"] as! Double
+                let y0Px:Double = arguments!["y0Px"] as! Double
+                let x1Px:Double = arguments!["x1Px"] as! Double
+                let y1Px:Double = arguments!["y1Px"] as! Double
+                //var x0: Int = Int((x0Px * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
+                //var y0: Int = Int((y0Px * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                //var x1: Int = Int((x1Px * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                //var y1: Int = Int((y1Px * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                // [5.5,5.4,5.3]
+                var x0: Int = Int((x0Px * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
+                var y0: Int = Int((y0Px * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                var x1: Int = Int((x1Px * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                var y1: Int = Int((y1Px * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
+                var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
 
-                    let coords:String = String(format: "%d00%d00%d00%d", unWrapCoordList[0], unWrapCoordList[1], unWrapCoordList[2], unWrapCoordList[3])
-                    let rValue = (coords as NSString).doubleValue
-                    result(rValue)
-                    break
+                let coords:String = String(format: "%d00%d00%d00%d", x0Px, y0Px, x1Px, y1Px)
+                let rValue = (coords as NSString).doubleValue
+                result(rValue)
+                break
 
-                    // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
-                    
-                    // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
-                    if (p0Pose[0] == 10 && p1Pose[0] == 10) {
-                        result(Double(151515))
-                    } else if(p0Pose[0] == 1 && p1Pose[0] == 3){
-                        result(Double(1313))
-                    } else if(p0Pose[0] == 1){
-                        result(Double(111))
-                    } else if(p0Pose[0] == 10){
-                        result(Double(111555))
-                    } else if(p1Pose[0] == 3){
-                        result(Double(333))
-                    } else if(p1Pose[0] == 10){
-                        result(Double(333555))
-                    } else {
-                    var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
-                    result(distance)
-                    }
-
+                // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
+                
+                // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
+                if (p0Pose[0] == 10 && p1Pose[0] == 10) {
+                    result(Double(151515))
+                } else if(p0Pose[0] == 1 && p1Pose[0] == 3){
+                    result(Double(1313))
+                } else if(p0Pose[0] == 1){
+                    result(Double(111))
+                } else if(p0Pose[0] == 10){
+                    result(Double(111555))
+                } else if(p1Pose[0] == 3){
+                    result(Double(333))
+                } else if(p1Pose[0] == 10){
+                    result(Double(333555))
                 } else {
-                    result(Double(3))    
+                var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
+                result(distance)
                 }
                 break
             case "dispose":

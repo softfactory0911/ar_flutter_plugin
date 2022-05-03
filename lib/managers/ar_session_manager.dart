@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:flutter/material.dart';
@@ -117,8 +118,13 @@ class ARSessionManager {
   }
 
   Future<double?> measureWithSnapshot(double x0Px, double y0Px, double x1Px, double y1Px) async {
-    final distance = await _channel.invokeMethod<double>('measure', [x0Px, y0Px, x1Px, y1Px]);
-    return distance;
+    if (Platform.isIOS) {
+      final distance = await _channel.invokeMethod<double>('measure', {'x0Px': x0Px, 'y0Px': y0Px, 'x1Px': x1Px, 'y1Px': y1Px});
+      return distance;
+    } else {
+      final distance = await _channel.invokeMethod<double>('measure', [x0Px, y0Px, x1Px, y1Px]);
+      return distance;
+    }
   }
 
   Future<bool> pause() async {
