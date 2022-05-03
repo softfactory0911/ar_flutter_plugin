@@ -37,7 +37,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
     // Image Data of Anchor Mapping Frame 
     private var anchorMap: Dictionary<String, Array<Float>> = Dictionary<String, Array<Float>>()
-    private let POINT_OFFSET = 20
+    private let POINT_OFFSET = 5
     private let REDUCE_RATE = 2.5
     private var snapshotWidth:Double = 0
     private var snapshotHeight:Double = 0
