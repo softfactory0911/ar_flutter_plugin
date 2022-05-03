@@ -171,6 +171,13 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                     var y1: Int = Int((unWrapCoordList[3] * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                     var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                     var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
+
+                    let coords:String = String(format: "%d00%d00%d00%d", unWrapCoordList[0], unWrapCoordList[1], unWrapCoordList[2], unWrapCoordList[3])
+                    let rValue = (coords as NSString).doubleValue
+                    result(rValue)
+                    break
+
+                    // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
                     
                     // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
                     if (p0Pose[0] == 10 && p1Pose[0] == 10) {
