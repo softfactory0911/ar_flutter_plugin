@@ -191,25 +191,6 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 result(distance)
                 break
 
-                // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
-                
-                // 이거 테스트하고 p0, p1 둘 다 확인하는거 먼저
-                if (p0Pose[0] == 10 && p1Pose[0] == 10) {
-                    result(Double(151515))
-                } else if(p0Pose[0] == 1 && p1Pose[0] == 3){
-                    result(Double(1313))
-                } else if(p0Pose[0] == 1){
-                    result(Double(111))
-                } else if(p0Pose[0] == 10){
-                    result(Double(111555))
-                } else if(p1Pose[0] == 3){
-                    result(Double(333))
-                } else if(p1Pose[0] == 10){
-                    result(Double(333555))
-                } else {
-                var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
-                result(distance)
-                }
                 break
             case "dispose":
                 onDispose(result)
