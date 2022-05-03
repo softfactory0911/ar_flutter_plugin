@@ -144,11 +144,11 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 // call the SCNView Snapshot method and return the Image
                 let snapshotImage = sceneView.snapshot()
 
-                let heightInPoints = image.size.height
-                let heightInPixels = heightInPoints * image.scale
+                let heightInPoints = snapshotImage.size.height
+                let heightInPixels = heightInPoints * snapshotImage.scale
 
-                let widthInPoints = image.size.width
-                let widthInPixels = widthInPoints * image.scale
+                let widthInPoints = snapshotImage.size.width
+                let widthInPixels = widthInPoints * snapshotImage.scale
                 snapshotWidth = widthInPixels
                 snapshotHeight = heightInPixels
 
