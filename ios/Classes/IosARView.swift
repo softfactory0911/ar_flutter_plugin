@@ -55,8 +55,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         //let height = Float(screen_height * screenScale)
         //let width = Float(screen_width)
         //let height = Float(screen_height)
-        let width = Float(UIScreen.main.bounds.size.width) * Float(screenScale)
-        let height = Float(UIScreen.main.bounds.size.height) * Float(screenScale)
+        let width = Float(UIScreen.main.bounds.size.width)
+        let height = Float(UIScreen.main.bounds.size.height)
 
         anchorMap = Dictionary<String, Array<Float>>()
 
@@ -144,13 +144,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 // call the SCNView Snapshot method and return the Image
                 let snapshotImage = sceneView.snapshot()
 
-                let heightInPoints = snapshotImage.size.height
-                let heightInPixels = heightInPoints * snapshotImage.scale
-
-                let widthInPoints = snapshotImage.size.width
-                let widthInPixels = widthInPoints * snapshotImage.scale
-                snapshotWidth = widthInPixels
-                snapshotHeight = heightInPixels
+                snapshotWidth = snapshotImage.size.width * snapshotImage.scale
+                snapshotHeight = snapshotImage.size.height * snapshotImage.scale
 
                 savePointMapInMeasureContext()
                 if let bytes = snapshotImage.pngData() {
@@ -180,17 +175,20 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 //var x1: Int = Int((x1Px * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                 //var y1: Int = Int((y1Px * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                 // [5.5,5.4,5.3]
-                var x0: Int = Int((x0Px * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
-                var y0: Int = Int((y0Px * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                var x1: Int = Int((x1Px * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                var y1: Int = Int((y1Px * Double(UIScreen.main.scale) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                let width = Double(UIScreen.main.bounds.size.width)
+                let height = Double(UIScreen.main.bounds.size.height)                
+                var xScale:Double = snapshotWidth / width
+                var yScale:Double = snapshotHeight / height
+                var x0: Int = Int((x0Px / xScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
+                var y0: Int = Int((y0Px / yScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                var x1: Int = Int((x1Px / xScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
+                var y1: Int = Int((y1Px / yScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                 var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                 var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
 
-                let width = Double(UIScreen.main.bounds.size.width)
-                let height = Double(UIScreen.main.bounds.size.height)
                 //snapshotWidth, snapshotHeight
-                result(snapshotWidth)
+                var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
+                result(distance)
                 break
 
                 // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
