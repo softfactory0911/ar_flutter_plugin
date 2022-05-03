@@ -39,6 +39,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
     private var anchorMap: Dictionary<String, Array<Float>> = Dictionary<String, Array<Float>>()
     private let POINT_OFFSET = 20
     private let REDUCE_RATE = 2.5
+    private var snapshotWidth:Double = 0
+    private var snapshotHeight:Double = 0
 
     func savePointMapInMeasureContext() {
         //let viewportSize = sceneView.bounds.size
@@ -141,6 +143,15 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
             case "snapshot":
                 // call the SCNView Snapshot method and return the Image
                 let snapshotImage = sceneView.snapshot()
+
+                let heightInPoints = image.size.height
+                let heightInPixels = heightInPoints * image.scale
+
+                let widthInPoints = image.size.width
+                let widthInPixels = widthInPoints * image.scale
+                snapshotWidth = widthInPixels
+                snapshotHeight = heightInPixels
+
                 savePointMapInMeasureContext()
                 if let bytes = snapshotImage.pngData() {
                     let data = FlutterStandardTypedData(bytes:bytes)
@@ -178,8 +189,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
                 let width = Double(UIScreen.main.bounds.size.width)
                 let height = Double(UIScreen.main.bounds.size.height)
-
-                result(height)
+                //snapshotWidth, snapshotHeight
+                result(snapshotWidth)
                 break
 
                 // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
