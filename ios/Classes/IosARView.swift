@@ -158,10 +158,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 result(true)
                 break
             case "measure":
-                let coordList = call.arguments as? Array<Double>
+                
                 let arguments = call.arguments as? Dictionary<String, Any>
-                // x0Px, y0Px, x1Px, y1Px
-                arguments!["x0Px"]
                 let x0Px:Double = arguments!["x0Px"] as! Double
                 let y0Px:Double = arguments!["y0Px"] as! Double
                 let x1Px:Double = arguments!["x1Px"] as! Double
@@ -178,7 +176,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                 var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
 
-                result(x0Px)
+                result(UIScreen.main.scale)
                 break
 
                 // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
