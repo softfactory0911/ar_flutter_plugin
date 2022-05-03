@@ -179,7 +179,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 let width = Double(UIScreen.main.bounds.size.width)
                 let height = Double(UIScreen.main.bounds.size.height)
 
-                result(width)
+                result(height)
                 break
 
                 // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
