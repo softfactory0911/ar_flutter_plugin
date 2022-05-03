@@ -176,7 +176,10 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
                 var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
 
-                result(UIScreen.main.scale)
+                let width = Double(UIScreen.main.bounds.size.width)
+                let height = Double(UIScreen.main.bounds.size.height)
+
+                result(width)
                 break
 
                 // dict에 있는 x,y 최소,최대값 확인 및 측정 좌표랑, scale값 확인 // s = point / pixel이 맞는지 확인도 필요
