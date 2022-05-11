@@ -421,12 +421,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 }
             }
         }
-        let supportForSceneReconstruction = ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh)
-        if supportForSceneReconstruction { 
-            //sceneView.automaticallyConfigureSession = true // defaut true
-            configuration.sceneReconstruction = .mesh
-        }    
-
+    
         // Update session configuration
         self.sceneView.session.run(configuration)
     }
