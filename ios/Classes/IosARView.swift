@@ -66,7 +66,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         }else {
             planeTypes = ARHitTestResult.ResultType([.existingPlaneUsingExtent, .featurePoint])
         }
-
+        // hitTest를 API 설명 보면 Point기준으로 하는 것 같다. 그러므로 현재 width, height를 쓰는게 맞아 보여짐
+        // 현재 한 가지 확인해야하는 건 width, height가 진짜 화면의 전체 Point를 매핑할 수 있는지 확인이 필요함
         var x:Int = 0
         while Float(x) < width {
             var y:Int = 0
@@ -84,7 +85,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                         Float(hitTestResult.worldTransform.columns.3.z)
                         ]
                 } else {
-                    anchorMap[sPoint] = anchorMap[sPoint] ?? [10.0 ,10.0, 10.0]
+                    anchorMap[sPoint] = anchorMap[sPoint] ?? [0, 0, 0]
                 }
                 
 
@@ -176,15 +177,15 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 //var y1: Int = Int((y1Px * Double(REDUCE_RATE) / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                 // [5.5,5.4,5.3]
                 let width = Double(UIScreen.main.bounds.size.width)
-                let height = Double(UIScreen.main.bounds.size.height)                
+                let height = Double(UIScreen.main.bounds.size.height)
                 var xScale:Double = snapshotWidth / width
                 var yScale:Double = snapshotHeight / height
                 var x0: Int = Int((x0Px / xScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
                 var y0: Int = Int((y0Px / yScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                 var x1: Int = Int((x1Px / xScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                 var y1: Int = Int((y1Px / yScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
-                var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [1.0,1.0,1.0]
-                var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [3.0,3.0,3.0]
+                var p0Pose: Array<Float> = anchorMap[String(format: "%d_%d", x0, y0)] ?? [0, 0, 0]
+                var p1Pose: Array<Float> = anchorMap[String(format: "%d_%d", x1, y1)] ?? [0, 0, 0]
 
                 //snapshotWidth, snapshotHeight
                 var distance = Double(sqrtf(powf(p1Pose[0]-p0Pose[0], 2) + powf(p1Pose[1]-p0Pose[1], 2) + powf(p1Pose[2]-p0Pose[2], 2)))
@@ -420,7 +421,12 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 }
             }
         }
-    
+        let supportForSceneReconstruction = ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh)
+        if supportForSceneReconstruction { 
+            //sceneView.automaticallyConfigureSession = true // defaut true
+            configuration.sceneReconstruction = .mesh
+        }    
+
         // Update session configuration
         self.sceneView.session.run(configuration)
     }
