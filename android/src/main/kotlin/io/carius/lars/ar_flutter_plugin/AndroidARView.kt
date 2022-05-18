@@ -104,7 +104,7 @@ internal class AndroidARView(
 
 
     private val POINT_OFFSET = 20
-    private val REDUCE_RATE = 2.5
+    private val REDUCE_RATE = 1.5
     private fun savePointMapInMeasureContext(frame: com.google.ar.core.Frame) {
         //중앙 좌표에서 멀어질수록 생기는 좌표 개수 구하는 알고리즘
         val start = SystemClock.elapsedRealtime()
