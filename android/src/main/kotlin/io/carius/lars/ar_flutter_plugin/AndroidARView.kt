@@ -243,15 +243,15 @@ internal class AndroidARView(
                                             + Math.pow((sensorPose.tz() - centerPose.tz()).toDouble(), 2.0)).toFloat()
                                         result.success(distance)
                                     } else {
-                                        result.success(0)    
+                                        result.success(0.0)    
                                     }
                                 } else {
-                                    result.success(0)
+                                    result.success(0.0)
                                 }
                                 
                             } catch (e: Exception) {
                                 e.printStackTrace()
-                                result.success(0)
+                                result.success(0.0)
                             }
                         }
                         "pause" -> {
