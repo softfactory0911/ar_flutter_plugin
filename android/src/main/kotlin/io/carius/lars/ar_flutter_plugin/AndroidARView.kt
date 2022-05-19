@@ -230,11 +230,21 @@ internal class AndroidARView(
                             }
                         }
                         "height" -> {
-                            
                             try {
                                 if (arSceneView.arFrame != null){
+                                    val w: Int =  (arSceneView.width / 2).toInt()
+                                    val h: Int =  (arSceneView.height / 2).toInt()
                                     val sensorPose = arSceneView.arFrame!!.getAndroidSensorPose()
-                                    result.success(sensorPose.tz())
+                                    val centerPose = getHitPose(arSceneView.arFrame!!, w, h)
+                                    if (sensorPose != null && centerPose != null) {
+                                        val distance = Math.sqrt(
+                                              Math.pow((sensorPose.tx() - centerPose.tx()).toDouble(), 2.0) 
+                                            + Math.pow((sensorPose.ty() - centerPose.ty()).toDouble(), 2.0) 
+                                            + Math.pow((sensorPose.tz() - centerPose.tz()).toDouble(), 2.0)).toFloat()
+                                        result.success(distance)
+                                    } else {
+                                        result.success(0)    
+                                    }
                                 } else {
                                     result.success(0)
                                 }
