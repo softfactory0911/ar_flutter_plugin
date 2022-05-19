@@ -127,13 +127,13 @@ class ARSessionManager {
     }
   }
 
-  Future<double?> estimateDeviceHeight() async {
+  Future<double> estimateDeviceHeight() async {
     if (Platform.isIOS) {
-      final distance = await _channel.invokeMethod<double>('height');
-      return distance;
+      final height = await _channel.invokeMethod<double>('height');
+      return height!;
     } else {
-      final distance = await _channel.invokeMethod<double>('height');
-      return distance;
+      final height = await _channel.invokeMethod<double>('height');
+      return height!;
     }
   }
 
