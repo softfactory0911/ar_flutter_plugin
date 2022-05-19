@@ -235,7 +235,7 @@ internal class AndroidARView(
                                     val w: Int =  (arSceneView.width / 2).toInt()
                                     val h: Int =  (arSceneView.height / 2).toInt()
                                     val sensorPose = arSceneView.arFrame!!.getAndroidSensorPose()
-                                    val centerPose = getHitPose(arSceneView.arFrame!!, w, h)
+                                    val centerPose = getHitPose(arSceneView.arFrame!!, w.toFloat(), h.toFloat())
                                     if (sensorPose != null && centerPose != null) {
                                         val distance = Math.sqrt(
                                               Math.pow((sensorPose.tx() - centerPose.tx()).toDouble(), 2.0) 
