@@ -127,6 +127,16 @@ class ARSessionManager {
     }
   }
 
+  Future<double?> estimateDeviceHeight() async {
+    if (Platform.isIOS) {
+      final distance = await _channel.invokeMethod<double>('height');
+      return distance;
+    } else {
+      final distance = await _channel.invokeMethod<double>('height');
+      return distance;
+    }
+  }
+
   Future<bool> pause() async {
     final result = await _channel.invokeMethod<bool>('pause');
     return result!;

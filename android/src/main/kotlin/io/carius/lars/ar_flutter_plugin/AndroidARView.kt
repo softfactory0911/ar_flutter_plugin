@@ -137,13 +137,6 @@ internal class AndroidARView(
         }
         val end2 = SystemClock.elapsedRealtime()
 
-        println("-----set anchorMap = ${(end1-start).toString()}ms")
-        println("-----mapping = ${(end2 - end1).toString()}ms")
-        println("-----total = ${(end2 - start).toString()}ms")
-        
-        println("map size = ${anchorMap!!.size} / total cnt = ${cnt} / map init size = ${(width / POINT_OFFSET + 1) * (height / POINT_OFFSET + 1)}")
-        println("---------- Anchor mapping 완료 ----------")
-
     }
     private fun getHitPose(frame: com.google.ar.core.Frame, xPx: Float, yPx: Float): Pose? {
         for (hit in frame.hitTest(xPx, yPx)) {
@@ -234,6 +227,21 @@ internal class AndroidARView(
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 result.success(null)
+                            }
+                        }
+                        "height" -> {
+                            
+                            try {
+                                if (arSceneView.arFrame != null){
+                                    val sensorPose = arSceneView.arFrame!!.getAndroidSensorPose()
+                                    result.success(sensorPose.tz())
+                                } else {
+                                    result.success(0)
+                                }
+                                
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                result.success(0)
                             }
                         }
                         "pause" -> {
