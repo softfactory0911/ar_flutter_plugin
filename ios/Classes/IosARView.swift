@@ -87,7 +87,6 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 } else {
                     anchorMap[sPoint] = anchorMap[sPoint] ?? [0, 0, 0]
                 }
-                
 
                 y = y + POINT_OFFSET
             }
@@ -110,6 +109,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         super.init()
 
         let configuration = ARWorldTrackingConfiguration() // Create default configuration before initializeARView is called
+        
         self.sceneView.delegate = self
         self.coachingView.delegate = self
         self.sceneView.session.run(configuration)
@@ -316,6 +316,11 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
     func initializeARView(arguments: Dictionary<String,Any>, result: FlutterResult){
         // Set plane detection configuration
         self.configuration = ARWorldTrackingConfiguration()
+        
+        // WorldAlignment 정렬 추거 / 가로 모드를 기반으로 하기 위해서
+        configuration.worldAlignment = .camera
+
+
         if let planeDetectionConfig = arguments["planeDetectionConfig"] as? Int {
             switch planeDetectionConfig {
                 case 1: 
