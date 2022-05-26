@@ -445,12 +445,8 @@ internal class AndroidARView(
                 anchorMap = null
             }
             onPause()
-            ArSceneView.reclaimReleasedResources()
             onDestroy()
             ArSceneView.destroyAllResources()
-            this.activity.getApplication().unregisterActivityLifecycleCallbacks(this.activityLifecycleCallbacks);
-
-            Runtime.getRuntime().gc();
         } catch (e: Exception) {
             println("----- Native dispose error")
             e.printStackTrace()
