@@ -236,7 +236,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 
 
                 NSLog("\n[ios measure - measure] x0=\(x0Px) y0=\(y0Px) x1=\(x1Px) y1=\(y1Px)")
-                NSLog("\n[ios measure - measure]UIScreen = w=\(width) h=\(height) xSclae=\(xScale) yScale = \(yScale)")
+                NSLog("\n[ios measure - measure] UIScreen = w=\(width) h=\(height) xSclae=\(xScale) yScale = \(yScale)")
+                NSLog("\n[ios measure - measure] 현재 방향 \(UIDevice.current.orientation)")
 
                 var x0: Int = Int((x0Px / xScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
                 var y0: Int = Int((y0Px / yScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
