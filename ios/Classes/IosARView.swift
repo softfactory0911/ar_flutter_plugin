@@ -124,8 +124,9 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 let sPoint: String = String(format: "%d_%d", x, y)
                 let raycastQuery: ARRaycastQuery? = sceneView.raycastQuery(
                                                                     from: point, 
-                                                                allowing: .estimatedPlane, 
-                                                                alignment: .any)
+                                                                allowing: .existingPlaneInfinite, 
+                                                                alignment: .horizontal
+)
 
                 let results: [ARRaycastResult] = sceneView.session.raycast(raycastQuery!)                
                 if let raycast = results.first {
@@ -375,8 +376,9 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         self.configuration = ARWorldTrackingConfiguration()
         
         // WorldAlignment 정렬 추거 / 가로 모드를 기반으로 하기 위해서
-        // configuration.worldAlignment = .camera
+        configuration.worldAlignment = .camera
         // configuration.worldAlignment = .gravity
+        configuration.isLightEstimationEnabled = true
 
 
         if let planeDetectionConfig = arguments["planeDetectionConfig"] as? Int {
