@@ -196,6 +196,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
                 snapshotWidth = snapshotImage.size.width * snapshotImage.scale
                 snapshotHeight = snapshotImage.size.height * snapshotImage.scale
+                NSLog("\n[ios measure - snapshot] w=\(snapshotImage.size.width) h=\(snapshotImage.size.height) scale=\(snapshotImage.scale)")
+                NSLog("\n[ios measure - snapshot] (* snapshotImage.scale) snapshotWidth=\(snapshotWidth) snapshotHeight=\(snapshotHeight)")
 
                 // savePointMapInMeasureContext()
                 savePointMapInMeasureContextWithRaycast()
