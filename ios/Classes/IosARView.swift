@@ -375,7 +375,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         self.configuration = ARWorldTrackingConfiguration()
         
         // WorldAlignment 정렬 추거 / 가로 모드를 기반으로 하기 위해서
-        configuration.worldAlignment = .camera
+        // configuration.worldAlignment = .camera
+        // configuration.worldAlignment = .gravity
 
 
         if let planeDetectionConfig = arguments["planeDetectionConfig"] as? Int {
