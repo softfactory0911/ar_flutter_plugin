@@ -130,11 +130,10 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
                 let results: [ARRaycastResult] = sceneView.session.raycast(raycastQuery!)                
                 if let raycast = results.first {
-                    let transWorldTransform = raycast.worldTransform.viewMatrix(UIInterfaceOrientation.landscapeRight)
                     anchorMap[sPoint] = [
-                        Float(transWorldTransform.columns.3.x), 
-                        Float(transWorldTransform.columns.3.y), 
-                        Float(transWorldTransform.columns.3.z)
+                        Float(raycast.worldTransform.columns.3.x), 
+                        Float(raycast.worldTransform.columns.3.y), 
+                        Float(raycast.worldTransform.columns.3.z)
                         ]
                 } else {
                     anchorMap[sPoint] = anchorMap[sPoint] ?? [0, 0, 0]
