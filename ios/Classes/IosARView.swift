@@ -97,6 +97,52 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         }
     }
 
+    func savePointMapInMeasureContextWithRaycast() {
+        //let viewportSize = sceneView.bounds.size
+        //let width = Float(viewportSize.width)
+        //let height = Float(viewportSize.height)
+
+        let screenBounds = UIScreen.main.bounds
+        let screen_width = screenBounds.width
+        let screen_height = screenBounds.height
+        let screenScale = UIScreen.main.scale
+
+        let width = Float(UIScreen.main.bounds.size.width)
+        let height = Float(UIScreen.main.bounds.size.height)
+
+        NSLog("\n[ios measure - 매핑]screenBounds = \(screenBounds) w=\(screen_width) h=\(screen_height) scale = \(screenScale)")
+        NSLog("\n[ios measure - 매핑]UIScreen = w=\(width) h=\(height)")
+
+        anchorMap = Dictionary<String, Array<Float>>()
+
+        var x:Int = 0
+        while Float(x) < width {
+            var y:Int = 0
+            while Float(y) < height {
+                let point: CGPoint = .init(x: x, y:y)
+
+                let sPoint: String = String(format: "%d_%d", x, y)
+                let raycastQuery: ARRaycastQuery? = sceneView.raycastQuery(
+                                                                    from: sPoint, 
+                                                                allowing: .estimatedPlane, 
+                                                                alignment: .any)
+
+                let results: [ARRaycastResult] = sceneView.session.raycast(raycastQuery!)                
+                if let raycast = results.first {
+                    anchorMap[sPoint] = [
+                        Float(raycast.worldTransform.columns.3.x), 
+                        Float(raycast.worldTransform.columns.3.y), 
+                        Float(raycast.worldTransform.columns.3.z)
+                        ]
+                } else {
+                    anchorMap[sPoint] = anchorMap[sPoint] ?? [0, 0, 0]
+                }
+                y = y + POINT_OFFSET
+            }
+            x = x + POINT_OFFSET
+        }
+    }
+
     init(
         frame: CGRect,
         viewIdentifier viewId: Int64,
@@ -151,7 +197,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 snapshotWidth = snapshotImage.size.width * snapshotImage.scale
                 snapshotHeight = snapshotImage.size.height * snapshotImage.scale
 
-                savePointMapInMeasureContext()
+                // savePointMapInMeasureContext()
+                savePointMapInMeasureContextWithRaycast()
                 if let bytes = snapshotImage.pngData() {
                     let data = FlutterStandardTypedData(bytes:bytes)
                     result(data)
