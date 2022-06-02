@@ -123,7 +123,7 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
                 let sPoint: String = String(format: "%d_%d", x, y)
                 let raycastQuery: ARRaycastQuery? = sceneView.raycastQuery(
-                                                                    from: sPoint, 
+                                                                    from: point, 
                                                                 allowing: .estimatedPlane, 
                                                                 alignment: .any)
 
