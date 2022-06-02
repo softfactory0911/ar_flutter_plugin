@@ -58,6 +58,9 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         let width = Float(UIScreen.main.bounds.size.width)
         let height = Float(UIScreen.main.bounds.size.height)
 
+        print("[ios measure - 매핑]screenBounds = \(screenBounds) w=\(screen_width) h=\(screen_height) scale = \(screenScale)")
+        print("[ios measure - 매핑]UIScreen = w=\(width) h=\(height)")
+
         anchorMap = Dictionary<String, Array<Float>>()
 
         let planeTypes: ARHitTestResult.ResultType
@@ -180,6 +183,11 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 let height = Double(UIScreen.main.bounds.size.height)
                 var xScale:Double = snapshotWidth / width
                 var yScale:Double = snapshotHeight / height
+                
+
+                print("[ios measure - measure] x0=\(x0Px) y0=\(y0Px) x1=\(x1Px) y1=\(y1Px)")
+                print("[ios measure - measure]UIScreen = w=\(width) h=\(height) xSclae=\(xScale) yScale = \(yScale)")
+
                 var x0: Int = Int((x0Px / xScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET 
                 var y0: Int = Int((y0Px / yScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
                 var x1: Int = Int((x1Px / xScale / Double(POINT_OFFSET)).rounded()) * POINT_OFFSET
