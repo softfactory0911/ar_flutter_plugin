@@ -124,8 +124,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 let sPoint: String = String(format: "%d_%d", x, y)
                 let raycastQuery: ARRaycastQuery? = sceneView.raycastQuery(
                                                                     from: point, 
-                                                                allowing: .existingPlaneInfinite, 
-                                                                alignment: .horizontal
+                                                                allowing: .existingPlaneGeometry, 
+                                                                alignment: .any
 )
 
                 let results: [ARRaycastResult] = sceneView.session.raycast(raycastQuery!)                
