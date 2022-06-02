@@ -130,10 +130,11 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
                 let results: [ARRaycastResult] = sceneView.session.raycast(raycastQuery!)                
                 if let raycast = results.first {
+                    let landscapeRaycast = raycast.viewMatrix(UIInterfaceOrientation.landscapeRight)
                     anchorMap[sPoint] = [
-                        Float(raycast.worldTransform.columns.3.x), 
-                        Float(raycast.worldTransform.columns.3.y), 
-                        Float(raycast.worldTransform.columns.3.z)
+                        Float(landscapeRaycast.worldTransform.columns.3.x), 
+                        Float(landscapeRaycast.worldTransform.columns.3.y), 
+                        Float(landscapeRaycast.worldTransform.columns.3.z)
                         ]
                 } else {
                     anchorMap[sPoint] = anchorMap[sPoint] ?? [0, 0, 0]
@@ -376,8 +377,8 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
         self.configuration = ARWorldTrackingConfiguration()
         
         // WorldAlignment 정렬 추거 / 가로 모드를 기반으로 하기 위해서
-        configuration.worldAlignment = .camera
-        // configuration.worldAlignment = .gravity
+        //configuration.worldAlignment = .camera
+        configuration.worldAlignment = .gravity
         configuration.isLightEstimationEnabled = true
 
 
