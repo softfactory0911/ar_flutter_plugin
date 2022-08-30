@@ -29,6 +29,7 @@ import com.google.ar.sceneform.ux.*
 import io.carius.lars.ar_flutter_plugin.Serialization.deserializeMatrix4
 import io.carius.lars.ar_flutter_plugin.Serialization.serializeAnchor
 import io.carius.lars.ar_flutter_plugin.Serialization.serializeHitResult
+import io.carius.lars.ar_flutter_plugin.Serialization.serializePose
 import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.loader.FlutterLoader
 import io.flutter.plugin.common.BinaryMessenger
@@ -146,6 +147,22 @@ internal class AndroidARView(
                     when (call.method) {
                         "init" -> {
                             initializeARView(call, result)
+                        }
+                        "getAnchorPose" -> {
+                            val anchorNode = arSceneView.scene.findByName(call.argument("anchorId")) as AnchorNode?
+                            if (anchorNode != null) {
+                                result.success(serializePose(anchorNode.anchor!!.pose))
+                            } else {
+                                result.error("Error", "could not get anchor pose", null)
+                            }
+                        }
+                        "getCameraPose" -> {
+                            val cameraPose = arSceneView.arFrame?.camera?.displayOrientedPose
+                            if (cameraPose != null) {
+                                result.success(serializePose(cameraPose!!))
+                            } else {
+                                result.error("Error", "could not get camera pose", null)
+                            }
                         }
                         "snapshot" -> {
                             var bitmap = Bitmap.createBitmap((arSceneView.width/REDUCE_RATE).toInt(), (arSceneView.height/REDUCE_RATE).toInt(), Bitmap.Config.ARGB_8888);
@@ -820,6 +837,7 @@ internal class AndroidARView(
                                     val anchorNode = arSceneView.scene.findByName(anchorName) as AnchorNode?
                                     if (anchorNode != null) {
                                         anchorNode.addChild(node)
+                                        completableFutureSuccess.complete(true)
                                     } else {
                                         completableFutureSuccess.complete(false)
                                     }
@@ -847,6 +865,7 @@ internal class AndroidARView(
                                     val anchorNode = arSceneView.scene.findByName(anchorName) as AnchorNode?
                                     if (anchorNode != null) {
                                         anchorNode.addChild(node)
+                                        completableFutureSuccess.complete(true)
                                     } else {
                                         completableFutureSuccess.complete(false)
                                     }
@@ -877,6 +896,7 @@ internal class AndroidARView(
                                     val anchorNode = arSceneView.scene.findByName(anchorName) as AnchorNode?
                                     if (anchorNode != null) {
                                         anchorNode.addChild(node)
+                                        completableFutureSuccess.complete(true)
                                     } else {
                                         completableFutureSuccess.complete(false)
                                     }
@@ -909,6 +929,7 @@ internal class AndroidARView(
                                     val anchorNode = arSceneView.scene.findByName(anchorName) as AnchorNode?
                                     if (anchorNode != null) {
                                         anchorNode.addChild(node)
+                                        completableFutureSuccess.complete(true)
                                     } else {
                                         completableFutureSuccess.complete(false)
                                     }
