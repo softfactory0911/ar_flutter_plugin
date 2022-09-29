@@ -184,9 +184,9 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
 
 
     func onSessionMethodCalled(_ call :FlutterMethodCall, _ result:FlutterResult) {
+        let arguments = call.arguments as? Dictionary<String, Any>
         switch call.method {
             case "init":
-                let arguments = call.arguments as? Dictionary<String, Any>
                 //self.sessionManagerChannel.invokeMethod("onError", arguments: ["SessionTEST from iOS"])
                 //result(nil)
                 initializeARView(arguments: arguments!, result: result)
