@@ -445,10 +445,17 @@ internal class AndroidARView(
         Log.d(TAG, "dispose called")
         println("-----[Native] dispose called")
         try {
-            if (anchorMap != null){
-                anchorMap!!.clear()
-                anchorMap = null
+            try {
+                // anchorMap 초기화
+                if (anchorMap != null){
+                    anchorMap!!.clear()
+                    anchorMap = null
+                }
+            } catch (e: Exception){
+                println("----- anchorMap clear error")
+                e.printStackTrace()
             }
+
             onPause()
             onDestroy()
             ArSceneView.destroyAllResources()
